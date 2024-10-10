@@ -330,7 +330,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void sendAnimatedDice(String chatId) {
-// if api not supported
+
 //        int value = (int) (Math.random() * 6 + 1);
 //        SendAnimation sendAnimation = new SendAnimation();
 //        sendAnimation.setChatId(chatId);
