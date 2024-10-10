@@ -73,7 +73,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                     break;
 
                 case "/dice":
-                    sendDice(chatId);
+                    sendAnimatedDice(chatId);
                     break;
 
                 case "/meme":
@@ -148,7 +148,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 
-    private void sendDice(String chatId) {
+    private void sendStaticDice(String chatId) {
         int value = (int) (Math.random() * 6 + 1);
         String message = "";
         switch (value) {
@@ -171,19 +171,18 @@ public class TelegramBot extends TelegramLongPollingBot {
                 message = "6\uFE0F⃣";
                 break;
         }
-        //sendText(chatId, message);
-        sendDice1(chatId, 1);
+        sendText(chatId, message);
     }
 
 
     private void sendMemeOneChat(String chatId) {
-        MemeContent meme= memeService.getDayMeme();
+        MemeContent meme = memeService.getDayMeme();
         sendMemo(meme, chatId);
     }
 
     public void sendMemeGroupChats(List<String> chatsIdList) {
         if (!chatsIdList.isEmpty()) {
-            MemeContent meme= memeService.getDayMeme();
+            MemeContent meme = memeService.getDayMeme();
             for (String chatId : chatsIdList) {
                 sendMemo(meme, chatId);
             }
@@ -330,22 +329,26 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private void sendDice1 (String chatId, int value) {
-        SendDice sendDice = new SendDice();
-        sendDice.setChatId(chatId);
-//        sendDice.
+    private void sendAnimatedDice(String chatId) {
+// if api not supported
+//        int value = (int) (Math.random() * 6 + 1);
 //        SendAnimation sendAnimation = new SendAnimation();
 //        sendAnimation.setChatId(chatId);
-//        sendAnimation.setAnimation(new InputFile(new File(getClass().getClassLoader().getResource("dice_1.gif").getFile())));
+//        sendAnimation.setAnimation(new InputFile(new File(getClass().getClassLoader().getResource("dice_" + value + ".gif").getFile())));
+//        try {
+//            execute(sendAnimation);
+//        } catch (TelegramApiException e) {
+//            log.error(e.getMessage());
+//        }
 
 
-
+        SendDice sendDice = new SendDice();
+        sendDice.setChatId(chatId);
         try {
             execute(sendDice);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
-
     }
 
 
