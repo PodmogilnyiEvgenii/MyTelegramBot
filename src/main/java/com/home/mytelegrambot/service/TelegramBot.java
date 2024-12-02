@@ -32,16 +32,14 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
-            String message = update.getMessage().getText();
+            String message = update.getMessage().getText().replace("@MemesForFunHelperBot", "");
             String data = "";
+
             if (message.contains(" ")) {
                 data = message.substring(message.indexOf(" ") + 1);
                 message = message.substring(0, message.indexOf(" "));
             }
             String chatId = update.getMessage().getChatId().toString();
-//            log.debug("chatId1: " + update.getMessage().getChatId().toString());
-//            log.debug("chatId2: " + update.getMessage().getChat().getId());
-//            log.debug("chatId3: " + update.getMessage().getChat().getLinkedChatId());
 
             switch (message) {
                 case "/help":
@@ -57,7 +55,7 @@ public class TelegramBot extends TelegramLongPollingBot {
                                     "/memeRemoveAll - удалить все задания" + "\n" +
                                     "/setSalaryDays {first day} {second day} - установить для этого чата зарплатные дни" + "\n" +
                                     "/getSalaryDays - получить зарплатные дни для этого чата" + "\n" +
-                                    "/salary - получить дни до зарплаты" + "\n" +
+                                    "/salary - получить сколько осталось дней до зарплаты" + "\n" +
                                     "/help - список команд"
                     );
                     break;
@@ -74,6 +72,13 @@ public class TelegramBot extends TelegramLongPollingBot {
 
                 case "/dice":
                     sendAnimatedDice(chatId);
+                    break;
+
+                case "/dice2":
+                    sendAnimatedDice2(chatId);
+                    break;
+                case "/stDice":
+                    sendStaticDice(chatId);
                     break;
 
                 case "/meme":
@@ -123,7 +128,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         int secondDay = Integer.parseInt(days[1]);
 
         if (salaryService.setSalaryDays(chatId, firstDay, secondDay)) {
-            sendText(chatId, "Для чата " + chatId + " установлены зарплатные дни " + firstDay + " и " + secondDay);
+            sendText(chatId, "Для чата" + /*" " + chatId + */" установлены зарплатные дни " + firstDay + " и " + secondDay);
         } else {
             sendText(chatId, "Неверный ввод данных");
         }
@@ -132,9 +137,9 @@ public class TelegramBot extends TelegramLongPollingBot {
     private void getSalaryDays(String chatId) {
         int[] days = salaryService.getSalaryDays(chatId);
         if (days.length != 0) {
-            sendText(chatId, "Для чата " + chatId + " установлены зарплатные дни " + days[0] + " и " + days[1]);
+            sendText(chatId, "Для чата" + /*" " + chatId + */" установлены зарплатные дни " + days[0] + " и " + days[1]);
         } else {
-            sendText(chatId, "Зарплатные дни для чата " + chatId + " не установлены");
+            sendText(chatId, "Зарплатные дни для чата"+ /*" " + chatId + */" не установлены");
         }
     }
 
@@ -143,37 +148,9 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (days.length != 0) {
             sendText(chatId, salaryService.getSalaryMessage(days[0], days[1]));
         } else {
-            sendText(chatId, "Зарплатные дни для чата " + chatId + " не установлены");
+            sendText(chatId, "Зарплатные дни для чата"+ /*" " + chatId + */" не установлены");
         }
     }
-
-
-    private void sendStaticDice(String chatId) {
-        int value = (int) (Math.random() * 6 + 1);
-        String message = "";
-        switch (value) {
-            case 1:
-                message = "1\uFE0F⃣";
-                break;
-            case 2:
-                message = "2\uFE0F⃣";
-                break;
-            case 3:
-                message = "3\uFE0F⃣";
-                break;
-            case 4:
-                message = "4\uFE0F⃣";
-                break;
-            case 5:
-                message = "5\uFE0F⃣";
-                break;
-            case 6:
-                message = "6\uFE0F⃣";
-                break;
-        }
-        sendText(chatId, message);
-    }
-
 
     private void sendMemeOneChat(String chatId) {
         MemeContent meme = memeService.getDayMeme();
@@ -247,7 +224,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         if (!list.isEmpty()) {
             StringBuilder message = new StringBuilder();
             for (ScheduledTask task : list) {
-                message.append("chatId: " + task.getChatId() + ", type: " + task.getType() + ", day_week: " + task.getDayWeek() + ", hour: " + task.getHour() + ", minute: " + task.getMinute() + "\n");
+                message.append(/*"chatId: " + task.getChatId() + ", type: " + task.getType() + ", "+*/ "day_week: " + task.getDayWeek() + ", hour: " + task.getHour() + ", minute: " + task.getMinute() + "\n");
             }
             sendText(chatId, message.substring(0, message.length() - 1));
         } else {
@@ -329,23 +306,49 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+    private void sendStaticDice(String chatId) {
+        int value = (int) (Math.random() * 6 + 1);
+        String message = "";
+        switch (value) {
+            case 1:
+                message = "1\uFE0F⃣";
+                break;
+            case 2:
+                message = "2\uFE0F⃣";
+                break;
+            case 3:
+                message = "3\uFE0F⃣";
+                break;
+            case 4:
+                message = "4\uFE0F⃣";
+                break;
+            case 5:
+                message = "5\uFE0F⃣";
+                break;
+            case 6:
+                message = "6\uFE0F⃣";
+                break;
+        }
+        sendText(chatId, message);
+    }
+
     private void sendAnimatedDice(String chatId) {
-
-//        int value = (int) (Math.random() * 6 + 1);
-//        SendAnimation sendAnimation = new SendAnimation();
-//        sendAnimation.setChatId(chatId);
-//        sendAnimation.setAnimation(new InputFile(new File(getClass().getClassLoader().getResource("dice_" + value + ".gif").getFile())));
-//        try {
-//            execute(sendAnimation);
-//        } catch (TelegramApiException e) {
-//            log.error(e.getMessage());
-//        }
-
-
         SendDice sendDice = new SendDice();
         sendDice.setChatId(chatId);
         try {
             execute(sendDice);
+        } catch (TelegramApiException e) {
+            log.error(e.getMessage());
+        }
+    }
+
+    private void sendAnimatedDice2(String chatId) {
+        int value = (int) (Math.random() * 6 + 1);
+        SendAnimation sendAnimation = new SendAnimation();
+        sendAnimation.setChatId(chatId);
+        sendAnimation.setAnimation(new InputFile(new File(getClass().getClassLoader().getResource("dice_" + value + ".gif").getFile())));
+        try {
+            execute(sendAnimation);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
