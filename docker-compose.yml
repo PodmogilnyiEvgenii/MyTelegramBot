@@ -8,6 +8,9 @@ services:
       - service-db
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://service-db/memes
+    volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
 
   service-db:
     image: postgres
