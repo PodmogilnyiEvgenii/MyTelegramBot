@@ -27,7 +27,6 @@ public class SalaryService {
 
     private int getDaysForSalary(int firstDay, int secondDay) {
 
-        //@TODO сделать сдвиг на пятницу если день приходится на выходные
         Calendar calendarNow = Calendar.getInstance();
         int ans = 0;
         List<Calendar> list = new ArrayList<>();

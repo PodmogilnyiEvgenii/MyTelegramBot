@@ -5,9 +5,12 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - service-db
+      service-db:
+        condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://service-db/memes
+    ports:
+      - "10088:8088"
     volumes:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
@@ -18,16 +21,16 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
     ports:
-      - "15432:5432"
+      - "10032:5432"
     volumes:
       - ./infrastructure/db/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
       - db-data:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready", "--quiet" ]
-      interval: 1s
+      test: [ "CMD-SHELL", "pg_isready -U admin -d memes" ]
+      interval: 5s
       timeout: 5s
-      retries: 10
+      retries: 5
 
   pgadmin:
     container_name: pgadmin4_container
@@ -37,7 +40,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: root
     ports:
-      - "5050:80"
+      - "10080:80"
     volumes:
       - pgadmin-data:/var/lib/pgadmin
 
