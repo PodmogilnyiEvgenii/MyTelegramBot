@@ -23,7 +23,7 @@ public class RestController {
         return ResponseEntity.ok("OK");
     }
 
-    @RequestMapping("${application.endpoint.status}")
+    @RequestMapping("${application.endpoint.status.extended}")
     public ResponseEntity<String> getExtendedStatus() {
         return ResponseEntity.ok(getTelegramBotStatus());
     }

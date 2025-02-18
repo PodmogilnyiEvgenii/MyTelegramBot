@@ -13,3 +13,7 @@ public class MyTelegramBotApplication {
     }
 
 }
+
+
+//docker-compose up --build
+//
