@@ -9,6 +9,7 @@ services:
         condition: service_healthy
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://service-db/memes
+      - TZ=Europe/Moscow
     ports:
       - "10088:8088"
     volumes:
